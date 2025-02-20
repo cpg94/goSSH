@@ -29,11 +29,11 @@ func getSaveLocation() *string {
 	return &homeDir
 }
 
-func Read() {
+func Read() *Sessions {
 	saveLocation := getSaveLocation()
 
 	if saveLocation != nil {
-		_, err := os.ReadFile(*saveLocation)
+		data, err := os.ReadFile(*saveLocation)
 
 		if err != nil {
 			initialSessions := Sessions{
@@ -42,7 +42,14 @@ func Read() {
 
 			Write(initialSessions)
 		}
+
+		parsedSessions := Sessions{}
+		json.Unmarshal(data, &parsedSessions)
+
+		return &parsedSessions
 	}
+
+	return nil
 }
 
 func Write(sessions Sessions) {
